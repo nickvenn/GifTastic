@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>homework Giphy</title>
+</head>
+
+<body>
+  <div id="first-gifs">
+  </div>
+
+  <form>
+    enter gifhy's here <input type="text" name="giphy" id="user-input"><br>
+    <button type="button" id="user-button">Click Me!</button>
+  </form>
+
+  <hr>
+  <div id="gifs-appear-here">
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+
+    $(document).ready(function () {
+      //load predetermined gif buttons
+      var gifArray = ["dogs", "cats", "Penguins", "horses", "ducks", "birds", "cows", "lions", "panthers", "ducks"];
+
+      for (var i = 0; i < gifArray.length; i++) {
+        var button = $("<button>");
+        button.addClass("button-gif");
+        button.attr("data-gif", gifArray[i]);
+        button.text(gifArray[i]);
+        $("#first-gifs").append(button);
+      }
+    });
+
+    $("#first-gifs").on("click",function(){
+
+        console.log($(this).attr("data-gif"));
+        var gif = $(this).attr("data-gif");
+        
+    });
+
+
+
+    $("#user-button").on("click", function () {
+      $("#gifs-appear-here").empty();
+      var userInput = $("#user-input").val();
+var gif = $(this).attr("data-gif");
+      var querey = 'https://api.giphy.com/v1/gifs/search?api_key=SQ9r395OVHbi9IHb4KTm6bz5iWGauZ4R&q=' + userInput + '&limit=5&offset=0&rating=G&lang=en';
+      console.log(querey);
+      $.ajax({
+        url: querey,
+        method: "GET"
+      })
+        .then(function (response) {
+          var results = response.data;
+          console.log(response.data);
+
+
+          for (var i = 0; i < results.length; i++) {
+            var gifDiv = $("<div>");
+
+            var rating = results[i].rating;
+
+            var p = $("<p>").text("Rating: " + rating);
+
+            var personImage = $("<img>");
+            personImage.attr("src", results[i].images.fixed_height.url);
+
+            gifDiv.prepend(p);
+            gifDiv.prepend(personImage);
+
+            $("#gifs-appear-here").prepend(gifDiv);
+          }
+        });
+
+    });
+
+
+  </script>
+</body>
+
+</html>
